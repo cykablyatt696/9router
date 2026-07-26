@@ -14,7 +14,7 @@ RUN git clone https://github.com/benbjohnson/litestream.git .
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg \
     CGO_ENABLED=1 go build -ldflags "-s -w -extldflags '-static'" \
-    -tags "osusergo,netgo,sqlite_omit_load_extension,vfs" \
+    -tags "osusergo,netgo,sqlite_omit_load_extension" \
     -o /usr/local/bin/litestream ./cmd/litestream
 
 # Stage 2: Build 9router
