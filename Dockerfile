@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1.7
+ARG NODE_IMAGE=node:22-alpine
 
 # Stage 1: Build Litestream from source
 FROM golang:1.25-alpine AS litestream-builder
@@ -17,7 +18,6 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     -o /usr/local/bin/litestream ./cmd/litestream
 
 # Stage 2: Build 9router
-ARG NODE_IMAGE=node:22-alpine
 FROM ${NODE_IMAGE} AS base
 WORKDIR /app
 
