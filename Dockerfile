@@ -75,8 +75,16 @@ if [ -n "$LITESTREAM_URL" ]; then\n\
     echo "No database found. Attempting Litestream restore from $LITESTREAM_URL..."\n\
     su-exec node litestream restore -if-replica-exists -o $DATA_DIR/db/data.sqlite $LITESTREAM_URL\n\
   fi\n\
+  echo "Creating Litestream configuration..."\n\
+  cat <<EOF > /app/litestream.yml\n\
+dbs:\n\
+  - path: $DATA_DIR/db/data.sqlite\n\
+    replicas:\n\
+      - url: $LITESTREAM_URL\n\
+        sync-interval: 1m\n\
+EOF\n\
   echo "Starting 9router wrapped in Litestream replication..."\n\
-  exec su-exec node litestream replicate -exec "node custom-server.js" $DATA_DIR/db/data.sqlite $LITESTREAM_URL\n\
+  exec su-exec node litestream replicate -config /app/litestream.yml -exec "node custom-server.js"\n\
 else\n\
   echo "LITESTREAM_URL not set. Starting 9router directly..."\n\
   exec su-exec node node custom-server.js\n\
